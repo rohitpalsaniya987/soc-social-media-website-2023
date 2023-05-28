@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Social Media Website</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<div id="signup-page">
+    <h1>Social Media</h1>
+  <h2>Create an Account</h2>
+  <form action="signup.php" method="post">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required> 
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required>
+    
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+    
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+    
+    <label for="age">Age</label>
+    <input type="number" id="age" name="age" required>
+    <label for="Gender ">Gender</label>
+    <div class="Gender">
+        <label>
+            <input 
+              type="radio" 
+              name="optradio">
+        Male</label>
+        <label>
+            <input 
+              type="radio" 
+              name="optradio">
+        Woman</label>
+        <label>
+            <input 
+               type="radio" 
+               name="optradio">
+        not eligible</label>
+      <div>
+      <div class="terms">  
+        <input type="checkbox" id="checkbox" value="are you eligible" required checked >
+        <label for = terms and condition> *T&C</label>
+      </div>      
+
+    <input type="submit" value="Sign Up">
+  
+</form>
+  
+  <p>Already have an account? <a href="./login.html">Log in</a></p>
+</div>
+</body>
+
+</html>
