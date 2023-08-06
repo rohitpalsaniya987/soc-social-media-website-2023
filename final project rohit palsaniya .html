@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackGram - Social Media</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .form-box {
+      background-color: #000;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    .form-box h1 {
+      margin-bottom: 20px;
+    }
+    .form-box input[type="text"],
+    .form-box input[type="email"],
+    .form-box input[type="password"] {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      background-color: transparent;
+      color: #fff;
+    }
+    .form-box input[type="text"]::placeholder,
+    .form-box input[type="email"]::placeholder,
+    .form-box input[type="password"]::placeholder {
+      color: #fff;
+    }
+    .form-box button {
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #3897f0;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .form-box button:hover {
+      background-color: #3273b2;
+    }
+    .form-box p {
+      margin-top: 10px;
+    }
+    .form-box a {
+      color: #3897f0;
+      text-decoration: none;
+    }
+    .form-box a:hover {
+      text-decoration: underline;
+    }
+    .posts {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .post {
+      background-color: #000;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      margin-bottom: 10px;
+    }
+    .post p {
+      color: #fff;
+      margin: 0;
+    }
+    .post small {
+      color: #999;
+    }
+    .delete-btn {
+      background-color: #ff0000;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .form-box {
+      animation: slide-up 0.5s ease;
+    }
+
+    @keyframes slide-up {
+      0% {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    #post-form,
+    #posts-list {
+      animation: fade-in 0.5s ease;
+    }
+
+    @keyframes fade-in {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .post {
+      position: relative;
+    }
+
+    .delete-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background-color: #ff0000;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .post:hover .delete-btn {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-box" id="signin-form">
+      <h1>Sign In</h1>
+      <form id="signin-form">
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <button type="submit">Sign In</button>
+      </form>
+      <p>New user? <a href="#" onclick="showSignup()">Sign Up</a></p>
+    </div>
+    <div class="form-box" id="signup-form" style="display: none;">
+      <h1>Sign Up</h1>
+      <form id="signup-form">
+        <input type="text" placeholder="Full Name" required>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" onclick="showSignin()">Sign In</a></p>
+    </div>
+    <div class="form-box" id="profile-page" style="display: none;">
+      <h1>Profile random generated.....😉 </h1>
+      <div>
+        <img id="profile-picture" src="" alt="Profile Picture">
+        <h2 id="user-name"></h2>
+        <p id="user-email"></p>
+        <button id="logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+    <div class="form-box" id="post-form" style="display: none;">
+      <h1>Create Post</h1>
+      <form id="create-post-form">
+        <textarea id="post-content" placeholder="Write your post..." required></textarea>
+        <button type="submit">Post</button>
+      </form>
+    </div>
+    <div class="posts" id="posts-list" style="display: none;"></div>
+  </div>
+
+  <script>
+    // Simulated user authentication (you can replace this with actual JWT authentication)
+    let isLoggedIn = false;
+    let currentUser = null;
+
+    // Simulated posts data (you can replace this with data fetched from the server)
+    let posts = [];
+
+    const signinForm = document.getElementById('signin-form');
+    const signupForm = document.getElementById('signup-form');
+    const profilePage = document.getElementById('profile-page');
+    const postForm = document.getElementById('post-form');
+    const postsList = document.getElementById('posts-list');
+    const profilePicture = document.getElementById('profile-picture');
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+
+    const token = 'YourJWTToken';
+
+
+    function showSignup() {
+      signinForm.style.display = 'none';
+      signupForm.style.display = 'block';
+    }
+
+    function showSignin() {
+      signinForm.style.display = 'block';
+      signupForm.style.display = 'none';
+    }
+
+    function showProfile() {
+      signinForm.style.display = 'none';
+      signupForm.style.display = 'none';
+      profilePage.style.display = 'block';
+      postForm.style.display = 'block';
+      postsList.style.display = 'block';
+      updateProfile();
+      fetchPosts();
+    }
+
+    function updateProfile() {
+      profilePicture.src = 'https://picsum.photos/150'; // Replace with the actual profile picture URL
+      userName.textContent = 'Rohit Palsaniya'; // Replace with the actual user's name
+      userEmail.textContent = 'roll@iitb.ac.in'; // Replace with the actual user's email
+    }
+
+    function logout() {
+      isLoggedIn = false;
+      currentUser = null;
+      profilePage.style.display = 'none';
+      postForm.style.display = 'none';
+      postsList.style.display = 'none';
+      signinForm.style.display = 'block';
+    }
+
+    function fetchPosts() {
+      // Simulated posts data (you can replace this with data fetched from the server)
+      posts = [
+        { id: 1, content: 'Post 1', author: 'ashok saran' },
+        { id: 2, content: 'Post 2', author: 'advait ' },
+      ];
+
+      renderPosts();
+    }
+
+    function renderPosts() {
+      postsList.innerHTML = '';
+      posts.forEach((post) => {
+        const postDiv = document.createElement('div');
+        postDiv.classList.add('post');
+        postDiv.innerHTML = `
+          <p>${post.content}</p>
+          <small>Author: ${post.author}</small>
+          <button class="delete-btn" onclick="deletePost(${post.id})">Delete</button>
+        `;
+        postsList.appendChild(postDiv);
+      });
+    }
+
+    function deletePost(id) {
+      // Simulated delete post (you can replace this with actual API call to delete the post on the server)
+      posts = posts.filter((post) => post.id !== id);
+      renderPosts();
+    }
+
+    document.getElementById('signin-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      isLoggedIn = true;
+      currentUser = 'palsaniya'; // Replace with the actual user's name
+      showProfile();
+    });
+
+    document.getElementById('signup-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      isLoggedIn = true;
+      currentUser = 'palsaniya'; // Replace with the actual user's name
+      showProfile();
+    });
+
+    document.getElementById('create-post-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const content = document.getElementById('post-content').value;
+      const newPost = {
+        id: Date.now(),
+        content,
+        author: currentUser,
+      };
+      posts.push(newPost);
+      document.getElementById('post-content').value = '';
+      renderPosts();
+    });
+
+    if (isLoggedIn) {
+      showProfile();
+    }
+  </script>
+</body>
+</html>
